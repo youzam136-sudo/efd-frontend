@@ -1,10 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   reactCompiler: true,
   reactStrictMode: true,
+  trailingSlash: true,
   images: {
+    unoptimized: true,
     dangerouslyAllowLocalIP: true,
     remotePatterns: [
       { protocol: "https", hostname: "**" },
