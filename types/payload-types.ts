@@ -167,3 +167,15 @@ export interface Patent {
 }
 
 export type Patents = StrapiResponse<Patent>;
+export interface Banner {
+  id: number;
+  documentId: string;
+  Title: string;
+  Subtitle: string;
+  Image: StrapiImage;
+  updatedAt: string;
+  createdAt: string;
+  publishedAt: string;
+}
+
+export type Banners = StrapiResponse<Banner>;
