@@ -1,0 +1,38 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme inline {
+  --font-sans: var(--google-font-noto-sans-kr);
+}
+
+* {
+  word-break: keep-all;
+}
+
+/* Google Translate 위젯 숨김 */
+#google_translate_element {
+  position: absolute;
+  left: -9999px;
+  visibility: hidden;
+}
+
+.goog-te-banner-frame,
+.goog-te-ftab-float,
+#goog-gt-tt {
+  display: none !important;
+}
+
+.skiptranslate iframe {
+  display: none !important;
+}
+
+#goog-gt-tt,
+.goog-te-balloon-frame,
+.goog-tooltip,
+.goog-tooltip:hover {
+  display: none !important;
+}
+
+body {
+  top: 0 !important;
+}
