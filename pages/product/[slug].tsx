@@ -9,7 +9,6 @@ import SectionIntro from "@/components/Common/SectionIntro";
 import { ProductDetail } from "@/components/menu";
 import { Blog, Blogs } from "@/types/payload-types";
 import api from "@/lib/api";
-import ReactMarkdown from "react-markdown";
 
 export const getStaticPaths = (async () => {
   const response: { data: Blogs } = await api.get(
@@ -51,9 +50,49 @@ export const getStaticProps = (async (context) => {
   product: Blog;
 }>;
 
+function renderBlocks(blocks: any[]): string {
+  if (!blocks || !Array.isArray(blocks)) return "";
+
+  return blocks
+    .map((block) => {
+      if (block.type === "paragraph") {
+        const text = block.content?.map((c: any) => c.text || "").join("") || "";
+        return `<p>${text}</p>`;
+      }
+      if (block.type === "heading") {
+        const text = block.content?.map((c: any) => c.text || "").join("") || "";
+        return `<h${block.props?.level || 2}>${text}</h${block.props?.level || 2}>`;
+      }
+      if (block.type === "image") {
+        return `<img src="${block.props?.url}" alt="${block.props?.name || ""}" style="max-width:100%" />`;
+      }
+      if (block.type === "table") {
+        const rows = block.content?.rows || [];
+        const tableRows = rows.map((row: any, i: number) => {
+          const cells = row.cells.map((cell: any) => {
+            const text = cell.content?.map((c: any) => c.text || "").join("") || "";
+            return i === 0 ? `<th style="border:1px solid #ddd;padding:8px;background:#f5f5f5">${text}</th>` : `<td style="border:1px solid #ddd;padding:8px">${text}</td>`;
+          }).join("");
+          return `<tr>${cells}</tr>`;
+        }).join("");
+        return `<table style="border-collapse:collapse;width:100%">${tableRows}</table>`;
+      }
+      return "";
+    })
+    .join("");
+}
+
 export default function ProductDetailPage({
   product,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
+  let contentHtml = "";
+  try {
+    const blocks = JSON.parse(product.Content);
+    contentHtml = renderBlocks(blocks);
+  } catch {
+    contentHtml = product.Content || "";
+  }
+
   return (
     <>
       <Head>
@@ -78,17 +117,9 @@ export default function ProductDetailPage({
                 </h1>
               </div>
             </div>
-
-            {/* <Image
-              className="relative mt-25 h-78 w-full object-cover md:h-125"
-              src={`${process.env.NEXT_PUBLIC_PAYLOAD_URL}${product.featuredImage.url}`}
-              width={1920}
-              height={1080}
-              alt={product.featuredImage.alt}
-            /> */}
             <div
               className="prose my-25 max-w-none"
-              dangerouslySetInnerHTML={{ __html: product.Content }}
+              dangerouslySetInnerHTML={{ __html: contentHtml }}
             />
           </div>
         </div>
