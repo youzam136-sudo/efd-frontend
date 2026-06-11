@@ -18,7 +18,7 @@ const Hero: React.FC<Props> = ({ products }) => {
               className="flex flex-col gap-7.5 md:gap-10"
             >
               <Image
-                src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${Feature_Image.url}`}
+                src={Feature_Image.url?.startsWith("http") ? Feature_Image.url : `${process.env.NEXT_PUBLIC_BACKEND_URL}${Feature_Image.url}`}
                 className="aspect-square w-full object-cover"
                 alt={Feature_Image.alternativeText ?? "feature-image"}
                 width={1920}
